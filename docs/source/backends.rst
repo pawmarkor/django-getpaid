@@ -130,6 +130,9 @@ There are some additional options you can provide:
 **testing**
     when you test your service you can enable this option, all payments for PayU will have a predefined "Test Payment" method which is provided by PayU service (needs to be enabled); default is False;
 
+**sandbox**
+    set ``True`` to use PayU Sandbox URL;
+
 `getpaid_configuration` management command
 ``````````````````````````````````````````
 After setting up django application it is also important to remember that some minimal configuration is needed also at PayU service configuration site. Please navigate to POS configuration, where you need to provide three links: success URL, failure URL, and online URL. The first two are used to redirect client after successful/failure payment. The third one is the address of script that will be notified about payment status change.

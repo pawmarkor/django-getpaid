@@ -33,7 +33,8 @@ class PaymentProcessor(PaymentProcessorBase):
     BACKEND_ACCEPTED_CURRENCY = (u'PLN',)
     BACKEND_LOGO_URL = u'getpaid/backends/payu/payu_logo.png'
 
-    _GATEWAY_URL = u'https://www.platnosci.pl/paygw/'
+    _SANDBOX_GATEWAY_URL = u'https://secure.snd.payu.com/paygw/'
+    _PROD_GATEWAY_URL = u'https://www.platnosci.pl/paygw/'
     _ACCEPTED_LANGS = (u'pl', u'en')
     _REQUEST_SIG_FIELDS = (
         u'pos_id', u'pay_type', u'session_id',
@@ -48,6 +49,13 @@ class PaymentProcessor(PaymentProcessorBase):
         u'trans_pos_id', u'trans_session_id', u'trans_order_id',
         u'trans_status', u'trans_amount', u'trans_desc', u'trans_ts',)
     _GET_ACCEPT_SIG_FIELDS = (u'trans_pos_id', u'trans_session_id', u'trans_ts',)
+
+    def __init__(self, *args, **kwargs):
+        if self.get_backend_setting('sandbox'):
+            self._GATEWAY_URL = self._SANDBOX_GATEWAY_URL
+        else:
+            self._GATEWAY_URL = self._PROD_GATEWAY_URL
+        super(PaymentProcessor, self).__init__(*args, **kwargs)
 
     @staticmethod
     def compute_sig(params, fields, key):
