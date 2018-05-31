@@ -51,7 +51,7 @@ class PaymentProcessor(PaymentProcessorBase):
     _GET_ACCEPT_SIG_FIELDS = (u'trans_pos_id', u'trans_session_id', u'trans_ts',)
 
     def __init__(self, *args, **kwargs):
-        if self.get_backend_setting('sandbox'):
+        if self.get_backend_setting('sandbox', False):
             self._GATEWAY_URL = self._SANDBOX_GATEWAY_URL
         else:
             self._GATEWAY_URL = self._PROD_GATEWAY_URL
