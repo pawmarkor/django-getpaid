@@ -10,6 +10,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext_lazy as _
 
 from getpaid import signals
+from getpaid.utils import get_ip_address
 from getpaid.backends import PaymentProcessorBase
 from getpaid.backends.payu.tasks import get_payment_status_task, accept_payment
 
@@ -146,9 +147,9 @@ class PaymentProcessor(PaymentProcessorBase):
 
         params['session_id'] = u"%d:%s" % (self.payment.pk, time.time())
 
-        # Warning: please make sure that this header actually has client IP
-        #         rather then web server proxy IP in your WSGI environment
-        params['client_ip'] = request.META['REMOTE_ADDR']
+        client_ip = get_ip_address(request)
+        if client_ip:
+            params['client_ip'] = client_ip
 
         if signing:
             params['ts'] = six.text_type(time.time())
