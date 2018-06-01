@@ -38,6 +38,11 @@ class SuccessView(DetailView):
     """
     model = Payment
 
+    def get(self, request, *args, **kwargs):
+        result = super().get(request, *args, **kwargs)
+        self.object.on_success()
+        return result
+
     def render_to_response(self, context, **response_kwargs):
         return http.HttpResponseRedirect(reverse('getpaid:success-fallback', kwargs={'pk': self.object.pk}))
 
@@ -47,6 +52,11 @@ class FailureView(DetailView):
     This view just redirects to standard backend failure link.
     """
     model = Payment
+
+    def get(self, request, *args, **kwargs):
+        result = super().get(request, *args, **kwargs)
+        self.object.on_failure()
+        return result
 
     def render_to_response(self, context, **response_kwargs):
         logger.error("Payment %s failed on backend error %s" % (self.kwargs['pk'], self.kwargs['error']))
